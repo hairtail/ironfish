@@ -14,6 +14,7 @@ use super::{
 use blake2s_simd::Params as Blake2sParams;
 use bls12_381::Scalar;
 use byteorder::{ByteOrder, LittleEndian, ReadBytesExt, WriteBytesExt};
+use colored::*;
 use ff::{Field, PrimeField};
 use group::{Curve, GroupEncoding};
 use ironfish_zkp::{
@@ -23,7 +24,11 @@ use ironfish_zkp::{
 };
 use jubjub::SubgroupPoint;
 use rand::thread_rng;
-use std::{fmt, io, io::Read};
+use std::{
+    fmt::{self, Display},
+    io,
+    io::Read,
+};
 pub const ENCRYPTED_NOTE_SIZE: usize =
     SCALAR_SIZE + MEMO_SIZE + AMOUNT_VALUE_SIZE + GENERATOR_SIZE + PUBLIC_ADDRESS_SIZE;
 //   8  value
@@ -360,6 +365,25 @@ impl<'a> Note {
 
         let sender = PublicAddress::read(&mut reader)?;
         Ok((randomness, asset_generator, value, memo, sender))
+    }
+}
+
+impl Display for Note {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            " {:>12}  {}\n {:>12}  {}\n {:>12}  {}\n  {:>12}  {}\n {:>12}  {}",
+            "Sender".cyan().bold(),
+            self.sender().hex_public_address(),
+            "Receiver".cyan().bold(),
+            self.owner().hex_public_address(),
+            "Value".cyan().bold(),
+            self.value(),
+            "AssetId".cyan().bold(),
+            hex::encode(self.asset_id()),
+            "Memo".cyan().bold(),
+            self.memo().to_string(),
+        )
     }
 }
 

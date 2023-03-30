@@ -17,6 +17,9 @@ use ironfish_zkp::ProofGenerationKey;
 use jubjub::SubgroupPoint;
 use rand::prelude::*;
 
+use colored::*;
+use core::fmt;
+use std::fmt::{Display, Formatter};
 use std::io;
 
 mod ephemeral;
@@ -273,5 +276,28 @@ impl SaplingKey {
         }
         let scalar = read_scalar(&hash_result[..])?;
         Ok(scalar)
+    }
+}
+
+impl Display for SaplingKey {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            " {:>12}  {}\n {:>12}  {}\n {:>12}  {}\n  {:>12}  {}\n  {:>12}  {}\n {:>12}  {}",
+            "Mnemonic".cyan().bold(),
+            self.to_words(Language::English)
+                .map_or("Parse mnemonic failed".to_string(), |words| words
+                    .into_phrase()),
+            "Spending Key".cyan().bold(),
+            self.hex_spending_key(),
+            "View Key".cyan().bold(),
+            self.view_key().hex_key(),
+            "Incoming View Key".cyan().bold(),
+            self.incoming_view_key().hex_key(),
+            "Outgoing View Key".cyan().bold(),
+            self.outgoing_view_key().hex_key(),
+            "Address".cyan().bold(),
+            self.public_address().hex_public_address(),
+        )
     }
 }

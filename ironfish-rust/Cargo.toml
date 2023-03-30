@@ -20,9 +20,11 @@ blake2s_simd = "1.0.0"
 bls12_381 = "0.7.0"
 byteorder = "1.4.3"
 chacha20poly1305 = "0.9.0"
+colored = "2.0.0"
 crypto_box = { version = "0.7.2", features = ["std"] }
 ff = "0.12.0"
 group = "0.12.0"
+hex = "0.4.3"
 ironfish_zkp = { path = "../ironfish-zkp" }
 jubjub = "0.9.0"
 lazy_static = "1.4.0"
